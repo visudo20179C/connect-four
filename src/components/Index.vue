@@ -36,7 +36,7 @@
 				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-20">
 					<div class="ml-auto mr-auto max-w-xl max-h-16 mb-4 mt-4 bg-blue-900" v-for="(item, index) in this.page.board">
 						<div class="grid grid-cols-8">
-							<div v-for="(i, nested_index) in item">
+							<div v-for="(i, nested_index) in item" class="ml-auto mr-auto">
 								<div v-if="i == 1">
 									<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-red-700 cursor-not-allowed"></div>
 								</div>
