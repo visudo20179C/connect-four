@@ -125,24 +125,24 @@ export default {
 			this.page.winner = w
 			if(w == 1) {
 				this.$confirm("Would you like to play again?", "Red Win's The Game!", 'success')
-                .then((result) => {
-                    if (result) {
+                		.then((result) => {
+                    			if (result) {
 						this.createBoard()
-                    }
+                    			}
 					this.$forceUpdate()
-                })
+                		})
 				.catch((error) => {
 					this.$forceUpdate()
 				})
 			}
 			else {
 				this.$confirm("Would you like to play again?", "Yellow Win's The Game!", 'success')
-                .then((result) => {
-                    if (result) {
+                		.then((result) => {
+                    			if (result) {
 						this.createBoard()
-                    }
+                    			}
 					this.$forceUpdate()
-                })
+                		})
 				.catch((error) => {
 					this.$forceUpdate()
 				})
