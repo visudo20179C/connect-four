@@ -33,6 +33,24 @@
 						</div>
 					</div>
 				</div>
+				<div v-if="this.socket.connected && !this.page.connectedWithOther" class="mb-2 ml-auto mr-auto">
+					<div class="h-6 mb-4 font-semibold text-center bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+						ClientID: {{clientId}}
+						<input type="hidden" id="copyClientId" :value="clientId">
+						<button class="w-16 h-6 bg-blue-900 text-white float-right text-sm" @click="copyClientId()">Copy</button>
+					</div>
+					<div class="flex flex-nowrap">
+						<input class="w-64 bg-gray-200 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-blue-900 rounded" v-model="page.socketIdToJoin" placeholder="Enter ClientID to join"></input>
+						<div class="w-32 ml-4 bg-gray-200 hover:bg-gray-100 text-blue-900 py-2 px-4 border border-blue-900 rounded shadow">
+							<button @click="joinGame()" class="font-semibold">
+								Join Game
+							</button>
+						</div>
+					</div>
+				</div>
+				<div v-if="this.page.connectedWithOther" class="w-2/3 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+					You are connected with another Player. Room ID: {{roomId}}
+				</div>
 				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-20">
 					<div class="ml-auto mr-auto max-w-xl max-h-16 mb-4 mt-4 bg-blue-900" v-for="(item, index) in this.page.board">
 						<div class="grid grid-cols-8">
@@ -80,6 +98,10 @@ export default {
 				turn: null,
 				gameWon: null,
 				winner: null,
+				playerYellow: null,
+				playerRed: null,
+				socketIdToJoin: null,
+				connectedWithOther: null,
 			}
 		}
 	},
@@ -98,6 +120,16 @@ export default {
 			return (this.page.winner == 1)
 				? "Red"
 				: "Yellow"
+		},
+		clientId() {
+			return (this.socket.id !== undefined)
+				? this.socket.id
+				: "not connected"
+		},
+		roomId() {
+			return (this.page.room !== undefined)
+				? this.page.room
+				: "not connected"
 		},
 	},
 	methods: {
@@ -123,6 +155,17 @@ export default {
 				}
 			});
 		},
+		joinGame() {
+			this.socket.emit('join_game', this.page.socketIdToJoin)	
+		},
+		copyClientId() {
+			let copy = document.querySelector('#copyClientId')
+			copy.setAttribute('type', 'text')
+			copy.select()
+			document.execCommand('copy')
+			copy.setAttribute('type', 'hidden')
+			window.getSelection().removeAllRanges()
+		},
 		gameOver(w) {
 			this.page.gameWon = true
 			this.page.winner = w
@@ -143,6 +186,7 @@ export default {
 				: "Yellow"
 		},
 		placeMove(x,y) {
+			this.socket.emit('move_placed', x, y)
 			this.$set(this.page.board[x], [y], this.value(this.page.turn))
 			this.checkHorizontalWin(this.value(this.page.turn))
 			this.checkVerticalWin(this.value(this.page.turn))
@@ -230,7 +274,14 @@ export default {
 		},
 	},
 	created() {
-		this.socket = io("http://172.18.154.173:3000/", { secure: false, reconnection: true, rejectUnauthorized: false })
+		this.socket = io("http://172.18.154.173:3000/", { secure: false, reconnection: false, rejectUnauthorized: false })
+		this.socket.on('connect', () => {
+			this.playerYellow = this.socket.id
+		})
+		this.socket.on('new_game', (room) => {
+			this.page.connectedWithOther = true
+			this.page.room = room
+		})
 		this.createBoard()
 	},
 }
