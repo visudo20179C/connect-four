@@ -9,7 +9,7 @@
       <a href="https://www.fgbradleys.com/rules/Connect%20Four.pdf" target="_blank" class="block ml-10 lg:inline-block lg:mt-0 text-gray-400 hover:text-gray-200 mr-4 text-lg font-black">
         Rules
       </a>
-      <a href="" class="block ml-10 lg:inline-block lg:mt-0 text-gray-400 hover:text-gray-200 text-lg font-black">
+      <a href="https://github.com/visudo20179C" target="_blank" class="block ml-10 lg:inline-block lg:mt-0 text-gray-400 hover:text-gray-200 text-lg font-black">
         Me
       </a>
 	  </div>

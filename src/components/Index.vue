@@ -13,12 +13,12 @@
 							<div v-if="gameOverCompute">
 								<div v-if="this.page.winner == 1">
 									<div class="text-red-700 font-black">
-										{{winnerCompute}}
+										{{winnerCompute}} Won!
 									</div>
 								</div>
 								<div v-else>
 									<div class="text-yellow-300 font-black">
-										{{winnerCompute}}
+										{{winnerCompute}} Won!
 									</div>
 								</div>
 							</div>
@@ -68,10 +68,13 @@
 </template>
 
 <script>
+import io from "socket.io-client"
+
 export default {
 	name: "ConnectFour",
 	data() {
 		return {
+			socket: {},
 			page: {
 				board: [],
 				turn: null,
@@ -93,8 +96,8 @@ export default {
 		},
 		winnerCompute() {
 			return (this.page.winner == 1)
-				? "Red won!"
-				: "Yellow won!"
+				? "Red"
+				: "Yellow"
 		},
 	},
 	methods: {
@@ -123,30 +126,21 @@ export default {
 		gameOver(w) {
 			this.page.gameWon = true
 			this.page.winner = w
-			if(w == 1) {
-				this.$confirm("Would you like to play again?", "Red Win's The Game!", 'success')
-                		.then((result) => {
-                    			if (result) {
-						this.createBoard()
-                    			}
-					this.$forceUpdate()
-                		})
-				.catch((error) => {
-					this.$forceUpdate()
-				})
-			}
-			else {
-				this.$confirm("Would you like to play again?", "Yellow Win's The Game!", 'success')
-                		.then((result) => {
-                    			if (result) {
-						this.createBoard()
-                    			}
-					this.$forceUpdate()
-                		})
-				.catch((error) => {
-					this.$forceUpdate()
-				})
-			}
+			this.$confirm("Would you like to play again?", this.getWinner()+" Win's The Game!", 'success')
+			.then((result) => {
+				if (result) {
+					this.createBoard()
+				}
+				this.$forceUpdate()
+			})
+			.catch((error) => {
+				this.$forceUpdate()
+			})
+		},
+		getWinner() {
+			return (this.page.winner == 1)
+				? "Red"
+				: "Yellow"
 		},
 		placeMove(x,y) {
 			this.$set(this.page.board[x], [y], this.value(this.page.turn))
@@ -195,18 +189,18 @@ export default {
 		checkBLTRdiagonals() {
 		  	for (var j = 0; j < 5; j++) {
 				for (var i = 0; i < 5; i++) {
-					var currentCount = 0
-					var currentToken = this.page.board[i][j]
-					if(currentToken !== 0) {
+					var count = 0
+					var space = this.page.board[i][j]
+					if(space !== 0) {
 						for (var step = 0; step < 4; step++) {
-							if (currentToken === this.page.board[i + step][j + step]) {
-								currentCount++
+							if (space === this.page.board[i + step][j + step]) {
+								count++
 							} 
 							else {
 								break
 							}
-							if (currentCount === 4) {
-								this.gameOver(currentToken)
+							if (count === 4) {
+								this.gameOver(space)
 							}
 						}
 					}
@@ -216,18 +210,18 @@ export default {
 		checkTLBRdiagonals() {
 			for (var j = 3; j <= 7; j++) {
 				for (var i = 0; i < 5; i++) {
-					var currentCount = 0
-					var currentToken = this.page.board[i][j]
-					if(currentToken !== 0) {
+					var count = 0
+					var space = this.page.board[i][j]
+					if(space !== 0) {
 						for (var step = 0; step < 4; step++) {
-							if (currentToken === this.page.board[i + step][j - step]) {
-							  	currentCount++
+							if (space === this.page.board[i + step][j - step]) {
+							  	count++
 							} 
 							else {
 							  	break
 							}
-							if (currentCount === 4) {
-								this.gameOver(currentToken)
+							if (count === 4) {
+								this.gameOver(space)
 							}
 						}
 					}
@@ -236,6 +230,7 @@ export default {
 		},
 	},
 	created() {
+		this.socket = io("http://172.18.154.173:3000/", { secure: false, reconnection: true, rejectUnauthorized: false })
 		this.createBoard()
 	},
 }
