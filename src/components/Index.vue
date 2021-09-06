@@ -23,11 +23,16 @@
 								</div>
 							</div>
 							<div v-else>
-								<div v-if="this.page.turn == 1" class="text-red-700 font-black">
-									{{turn}}
+								<div v-if="!this.page.connectedWithOther" class="text-gray-400">
+									Not connected	
 								</div>
-								<div v-else class="text-yellow-300 font-black">
-									{{turn}}
+								<div v-else>
+									<div v-if="this.page.turn == 1" class="text-red-700 font-black">
+										{{turn}}
+									</div>
+									<div v-else class="text-yellow-300 font-black">
+										{{turn}}
+									</div>
 								</div>
 							</div>
 						</div>
