@@ -48,8 +48,13 @@
 						</div>
 					</div>
 				</div>
-				<div v-if="this.page.connectedWithOther" class="w-2/3 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
-					You are connected with another Player. Room ID: {{roomId}}
+				<div v-if="this.page.connectedWithOther">
+					<div class="w-1/2 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+						You are connected with another Player.
+					</div>
+					<div class="w-1/2 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+						{{turnCompute}}
+					</div>
 				</div>
 				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-20">
 					<div class="ml-auto mr-auto max-w-xl max-h-16 mb-4 mt-4 bg-blue-900" v-for="(item, index) in this.page.board">
@@ -64,9 +69,19 @@
 								<div v-else>
 									<div v-if="index == 7 || index !== 0 && valueBelow(index, nested_index) || index == 0 && valueBelow(index, nested_index)">
 										<div v-if="gameOverCompute == false">
-											<button @click="placeMove(index, nested_index)">
-												<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
-											</button>
+											<div v-if="page.turn == 0 && page.playerYellow == socket.id">
+												<button @click="placeMove(index, nested_index)">
+													<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
+												</button>
+											</div>
+											<div v-else-if="page.turn == 1 && page.playerRed == socket.id">
+												<button @click="placeMove(index, nested_index)">
+													<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
+												</button>
+											</div>
+											<div v-else>
+												<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+											</div>
 										</div>
 										<div v-else>
 											<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
@@ -95,6 +110,7 @@ export default {
 			socket: {},
 			page: {
 				board: [],
+				room: null,
 				turn: null,
 				gameWon: null,
 				winner: null,
@@ -110,6 +126,17 @@ export default {
 			return (this.page.turn == 1)
 				? "It's Red's Turn"
 				: "It's Yellow's Turn"
+		},
+		turnCompute() {
+			if(this.page.turn == 1 && this.page.playerRed == this.socket.id) {
+				return "It is your turn."
+			}
+			else if(this.page.turn == 0 && this.page.playerYellow == this.socket.id) {
+				return "It is your turn."
+			}
+			else {
+				return "It is your opponent's turn."
+			}
 		},
 		gameOverCompute() {
 			return (this.page.gameWon == true)
@@ -147,8 +174,10 @@ export default {
 		newGame() {
 			this.$confirm("Start a new game?").then((response) => {
 				if(response) {
+					this.socket.emit('leave_game', this.page.room)	
+					this.page.connectedWithOther = false
 					this.createBoard()
-					this.$forceUpdate()
+					window.location.reload()
 				}
 				else {
 					return
@@ -156,7 +185,7 @@ export default {
 			});
 		},
 		joinGame() {
-			this.socket.emit('join_game', this.page.socketIdToJoin)	
+			this.socket.emit('join_game', this.page.socketIdToJoin, this.socket.id)	
 		},
 		copyClientId() {
 			let copy = document.querySelector('#copyClientId')
@@ -169,15 +198,12 @@ export default {
 		gameOver(w) {
 			this.page.gameWon = true
 			this.page.winner = w
-			this.$confirm("Would you like to play again?", this.getWinner()+" Win's The Game!", 'success')
-			.then((result) => {
-				if (result) {
-					this.createBoard()
-				}
-				this.$forceUpdate()
+			this.$alert('Player '+this.getWinner()+" Win's The Game!", 'Game Over!')
+			.then(() => {
+				window.location.reload()
 			})
 			.catch((error) => {
-				this.$forceUpdate()
+				window.location.reload()
 			})
 		},
 		getWinner() {
@@ -186,13 +212,7 @@ export default {
 				: "Yellow"
 		},
 		placeMove(x,y) {
-			this.socket.emit('move_placed', x, y)
-			this.$set(this.page.board[x], [y], this.value(this.page.turn))
-			this.checkHorizontalWin(this.value(this.page.turn))
-			this.checkVerticalWin(this.value(this.page.turn))
-			this.checkDiagonalWin()
-			this.page.turn = !this.page.turn
-			this.$forceUpdate()
+			this.socket.emit('move_placed', this.page.room, x, y)
 		},
 		value(t) {
 			return (t == 1)
@@ -275,12 +295,23 @@ export default {
 	},
 	created() {
 		this.socket = io("http://172.18.154.173:3000/", { secure: false, reconnection: false, rejectUnauthorized: false })
-		this.socket.on('connect', () => {
-			this.playerYellow = this.socket.id
-		})
-		this.socket.on('new_game', (room) => {
+		this.socket.on('new_game', (room, client) => {
 			this.page.connectedWithOther = true
 			this.page.room = room
+			this.page.playerYellow = room
+			this.page.playerRed = client
+		})
+		this.socket.on('move_placed_received', (x,y) => {
+			this.$set(this.page.board[x], [y], this.value(this.page.turn))
+			this.checkHorizontalWin(this.value(this.page.turn))
+			this.checkVerticalWin(this.value(this.page.turn))
+			this.checkDiagonalWin()
+			this.page.turn = !this.page.turn
+			this.$forceUpdate()
+		})
+		this.socket.on('player_left', (room) => {
+			this.page.connectedWithOther = false
+			window.location.reload()
 		})
 		this.createBoard()
 	},
