@@ -299,7 +299,7 @@ export default {
 		},
 	},
 	created() {
-		this.socket = io("http://45.80.152.57:3000/", { secure: false, reconnection: false, rejectUnauthorized: false })
+		this.socket = io("https://45.80.152.57:3000/", { secure: true, reconnection: false, rejectUnauthorized: false })
 		this.socket.on('new_game', (room, client) => {
 			this.page.connectedWithOther = true
 			this.page.room = room
