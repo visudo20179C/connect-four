@@ -11,7 +11,7 @@ This implementation was ~500 SLOC and was written in the VueJS framework. For st
 
 This is a personal project of mine however I'm open to contributions/feedback.  
 
-There is a live version of the site running at [here](https://connect-four.visudo.me/) if you'd like to see how it works.
+There is a live version of the site running [here](https://connect-four.visudo.me/) if you'd like to see how it works.
 
 ## socket-io
 
