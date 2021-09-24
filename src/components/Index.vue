@@ -203,13 +203,24 @@ export default {
 		gameOver(w) {
 			this.page.gameWon = true
 			this.page.winner = w
-			this.$alert('Player '+this.getWinner()+" Win's The Game!", 'Game Over!')
-			.then(() => {
-				window.location.reload()
-			})
-			.catch((error) => {
-				window.location.reload()
-			})
+			if(w == 0) {
+				this.$alert("It's a Draw!", 'Game Over!')
+				.then(() => {
+					window.location.reload()
+				})
+				.catch((error) => {
+					window.location.reload()
+				})
+			}
+			else {
+				this.$alert('Player '+this.getWinner()+" Win's The Game!", 'Game Over!')
+				.then(() => {
+					window.location.reload()
+				})
+				.catch((error) => {
+					window.location.reload()
+				})
+			}
 		},
 		getWinner() {
 			return (this.page.winner == 1)
@@ -228,6 +239,19 @@ export default {
 			return(typeof this.page.board[x+1][y] !== undefined && this.page.board[x+1][y] !== 0)
 				? true
 				: false
+		},
+		checkDraw() {
+			var containsEmptySpace = false
+			for(var i=0;i<8;i++) {
+				for(var j=0;j<8;j++) {
+					if(this.page.board[i][j] == 0) {
+						containsEmptySpace = true
+					}
+				}
+			}
+			if(!containsEmptySpace) {
+				this.gameOver(0)
+			}
 		},
 		checkHorizontalWin(n) {
 			for(var i=0;i<8;i++) {
@@ -311,6 +335,7 @@ export default {
 			this.checkHorizontalWin(this.value(this.page.turn))
 			this.checkVerticalWin(this.value(this.page.turn))
 			this.checkDiagonalWin()
+			this.checkDraw()
 			this.page.turn = !this.page.turn
 			this.$forceUpdate()
 		})
