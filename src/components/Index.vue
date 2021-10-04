@@ -386,6 +386,15 @@ export default {
 				return
 			})
 		})
+		this.socket.on('error_room_full', (room) => {
+			this.$alert('This room is full!', 'Error!')
+			.then(() => {
+				return
+			})
+			.catch((error) => {
+				return
+			})
+		})
 		this.createBoard()
 	},
 }
