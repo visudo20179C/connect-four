@@ -377,6 +377,15 @@ export default {
 				return
 			})
 		})
+		this.socket.on('error_no_room', (room) => {
+			this.$alert('A room with that ID does not exist!', 'Error!')
+			.then(() => {
+				return
+			})
+			.catch((error) => {
+				return
+			})
+		})
 		this.createBoard()
 	},
 }
