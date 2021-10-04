@@ -368,6 +368,15 @@ export default {
 			this.page.connectedWithOther = false
 			window.location.reload()
 		})
+		this.socket.on('error_same_room', (room) => {
+			this.$alert('You cannot join your own room!', 'Error!')
+			.then(() => {
+				return
+			})
+			.catch((error) => {
+				return
+			})
+		})
 		this.createBoard()
 	},
 }
