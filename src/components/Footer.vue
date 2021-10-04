@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-blue-900 block md:flex p-8">
+    <footer class="border-t-2 border-yellow-300 bg-blue-900 block md:flex p-8">
         <div class="w-full md:w-1/3 flex justify-left m-4">
 		<div class="text-sm">
 			<div class="border-2 rounded-lg border-yellow-300 text-left">

@@ -23,7 +23,7 @@
 								</div>
 							</div>
 							<div v-else>
-								<div v-if="!this.page.connectedWithOther" class="text-gray-400">
+								<div v-if="!this.page.connectedWithOther" class="text-gray-100">
 									Not connected	
 								</div>
 								<div v-else>
@@ -39,10 +39,26 @@
 					</div>
 				</div>
 				<div v-if="this.socket.connected && !this.page.connectedWithOther" class="mb-2 ml-auto mr-auto">
-					<div class="h-6 mb-4 font-semibold text-center bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
-						ClientID: {{clientId}}
+					<div class="flex flex-nowrap">
+						<div class="h-6 w-3/4 mb-4 font-semibold text-center bg-gray-200 text-blue-900 border border-blue-900 rounded">
+							ClientID: {{clientId}}
+						</div>
+						<v-popover
+							offset="12"
+							placement="right"
+  							:disabled="!isEnabled"
+						>
 						<input type="hidden" id="copyClientId" :value="clientId">
-						<button class="w-16 h-6 bg-blue-900 text-white float-right text-sm" @click="copyClientId()">Copy</button>
+						<button class="w-24 h-6 ml-2 border rounded border-blue-900 bg-blue-900 text-white float-right text-md" 
+							@click="copyClientId()">
+							Copy
+						</button>
+						<template slot="popover">
+							<div class="h-6 bg-gray-200 text-blue-900 border border-blue-900 rounded shadow font-bold">
+								Copied!
+							</div>
+						</template>
+						</v-popover>
 					</div>
 					<div class="flex flex-nowrap">
 						<input class="w-64 bg-gray-200 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-blue-900 rounded" v-model="page.socketIdToJoin" placeholder="Enter ClientID to join"></input>
@@ -61,7 +77,7 @@
 						{{turnCompute}}
 					</div>
 				</div>
-				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-20">
+				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-10">
 					<div class="ml-auto mr-auto max-w-xl max-h-16 mb-4 mt-4 bg-blue-900" v-for="(item, index) in this.page.board">
 						<div class="grid grid-cols-8">
 							<div v-for="(i, nested_index) in item" class="ml-auto mr-auto">
@@ -100,6 +116,14 @@
 						</div>
 					</div>
 				</div>
+				<div class="border border-blue-900 rounded ml-auto mr-auto w-2/3 mb-12">
+					<h1 class="text-blue-900 font-bold text-2xl">How to Play:</h1>
+					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold text-lg">
+						<li>Copy your client ID above and send it to one of your friends.</li>
+						<li>Have one of your friends send you theirs and connect to their session.</li>
+						<li>Play the game until there is a winner or a draw. Good luck!</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -112,6 +136,7 @@ export default {
 	name: "ConnectFour",
 	data() {
 		return {
+			isEnabled: true,
 			socket: {},
 			page: {
 				board: [],
