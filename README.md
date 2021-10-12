@@ -1,5 +1,7 @@
 # Connect Four with VueJS
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/visudo20179C/connect-four.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/visudo20179C/connect-four/alerts/)
+
 ## Have you ever played connect four?
 
 It's a pretty fun game. Connect four spaces horizontally, vertically, or diagonally to win.
