@@ -261,7 +261,7 @@ export default {
 				: -1
 		},
 		valueBelow(x,y) {
-			return(typeof this.page.board[x+1][y] !== undefined && this.page.board[x+1][y] !== 0)
+			return(this.page.board[x+1][y] !== undefined && this.page.board[x+1][y] !== 0)
 				? true
 				: false
 		},
@@ -281,7 +281,7 @@ export default {
 		checkHorizontalWin(n) {
 			for(var i=0;i<8;i++) {
 				for(var j=0;j<8;j++) {
-					if(0 < j < 4) {
+					if(0 <= j && j < 4) {
 						if(this.page.board[i][j] == n && this.page.board[i][j+1] == n && this.page.board[i][j+2] == n && this.page.board[i][j+3] == n) {
 							this.gameOver(n)
 						}
