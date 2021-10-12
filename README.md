@@ -1,6 +1,7 @@
 # Connect Four with VueJS
 
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/visudo20179C/connect-four.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/visudo20179C/connect-four/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/visudo20179C/connect-four.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/visudo20179C/connect-four/context:javascript)
 
 ## Have you ever played connect four?
 
