@@ -2,13 +2,13 @@
 	<div class="bg-gray-400">
 		<div>
 			<div class="ml-auto mr-auto pt-10 grid grid-rows-8 row-span-8 ml-4 w-3/5">
-				<div class="flex flex-nowrap ml-auto mr-auto">
+				<div class="flex flex-col ml-auto mr-auto sm:flex-row">
 					<div class="mt-8 mr-4">
 						<button class="bg-gray-200 hover:bg-gray-100 text-blue-900 font-semibold py-2 px-4 border border-blue-900 rounded shadow" @click="newGame()">
 							New Game
 						</button>
 					</div>
-					<div class="border-2 rounded-lg h-20 w-60 mt-2 mb-5 ml-auto mr-auto text-center bg-blue-900 border-yellow-300">
+					<div class="border-2 rounded-lg h-20 w-60 mt-2 mb-5 mx-auto text-center bg-blue-900 border-yellow-300">
 						<div class="text-2xl mt-4">
 							<div v-if="gameOverCompute">
 								<div v-if="this.page.winner == 1">
@@ -38,9 +38,9 @@
 						</div>
 					</div>
 				</div>
-				<div v-if="this.socket.connected && !this.page.connectedWithOther" class="mb-2 ml-auto mr-auto">
-					<div class="flex flex-nowrap">
-						<div class="h-6 w-3/4 mb-4 font-semibold text-center bg-gray-200 text-blue-900 border border-blue-900 rounded">
+				<div v-if="this.socket.connected && !this.page.connectedWithOther" class="mb-2 mx-auto">
+					<div class="flex flex-col sm:flex-row items-center">
+						<div class="mb-4 mx-auto font-semibold text-center bg-gray-200 py-2 px-3 text-blue-900 border border-blue-900 rounded">
 							ClientID: {{clientId}}
 						</div>
 						<v-popover
@@ -60,9 +60,9 @@
 						</template>
 						</v-popover>
 					</div>
-					<div class="flex flex-nowrap">
-						<input class="w-64 bg-gray-200 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-blue-900 rounded" v-model="page.socketIdToJoin" placeholder="Enter ClientID to join"></input>
-						<div class="w-32 ml-4 bg-gray-200 hover:bg-gray-100 text-blue-900 py-2 px-4 border border-blue-900 rounded shadow">
+					<div class="flex flex-col sm:flex-row">
+						<input class="w-64 mx-auto bg-gray-200 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-blue-900 rounded" v-model="page.socketIdToJoin" placeholder="Enter ClientID to join"></input>
+						<div class="w-32 ml-4 mx-auto bg-gray-200 hover:bg-gray-100 text-blue-900 py-2 px-4 border border-blue-900 rounded shadow">
 							<button @click="joinGame()" class="font-semibold">
 								Join Game
 							</button>
@@ -70,10 +70,10 @@
 					</div>
 				</div>
 				<div v-if="this.page.connectedWithOther">
-					<div class="w-1/2 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+					<div class="w-3/4 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2">
 						You are connected with another Player.
 					</div>
-					<div class="w-1/2 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+					<div class="w-3/4 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2">
 						{{turnCompute}}
 					</div>
 				</div>
@@ -82,43 +82,43 @@
 						<div class="grid grid-cols-8">
 							<div v-for="(i, nested_index) in item" class="ml-auto mr-auto">
 								<div v-if="i == 1">
-									<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-red-700 cursor-not-allowed"></div>
+									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-red-700 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-16 md:w-16"></div>
 								</div>
 								<div v-else-if="i == -1">
-									<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-yellow-300 cursor-not-allowed"></div>
+									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-yellow-300 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
 								</div>
 								<div v-else>
 									<div v-if="index == 7 || index !== 0 && valueBelow(index, nested_index) || index == 0 && valueBelow(index, nested_index)">
 										<div v-if="gameOverCompute == false">
 											<div v-if="page.turn == 0 && page.playerYellow == socket.id">
 												<button @click="placeMove(index, nested_index)">
-													<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
+													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
 												</button>
 											</div>
 											<div v-else-if="page.turn == 1 && page.playerRed == socket.id">
 												<button @click="placeMove(index, nested_index)">
-													<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
+													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
 												</button>
 											</div>
 											<div v-else>
-												<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+												<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
 											</div>
 										</div>
 										<div v-else>
-											<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+											<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
 										</div>
 									</div>
 									<div v-else>
-										<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+										<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-16 md:w-16"></div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="border border-blue-900 rounded ml-auto mr-auto w-2/3 mb-12">
-					<h1 class="text-blue-900 font-bold text-2xl">How to Play:</h1>
-					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold text-lg">
+				<div class="border border-blue-900 rounded ml-auto mr-auto w-5/6 mb-12 py-2 px-3">
+					<h1 class="text-blue-900 font-bold text-2xl mb-4">How to Play:</h1>
+					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold text-lg mx-auto">
 						<li>Copy your client ID above and send it to one of your friends.</li>
 						<li>Have one of your friends send you theirs and connect to their session.</li>
 						<li>Play the game until there is a winner or a draw. Good luck!</li>
