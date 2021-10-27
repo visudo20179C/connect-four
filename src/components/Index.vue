@@ -76,6 +76,9 @@
 					<div class="w-5/6 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2 px-2 py-3 text-xs sm:text-sm">
 						{{turnCompute}}
 					</div>
+					<div>
+						{{page.timeLeft}}				
+					</div>
 				</div>
 				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 w-xl max-w-2xl m-auto mb-10">
 					<div class="m-auto max-w-xl max-h-4 mb-4 mt-4 bg-blue-900 sm:max-h-8 md:max-h-12 lg:max-h-16" v-for="(item, index) in this.page.board">
@@ -148,6 +151,7 @@ export default {
 				playerRed: null,
 				socketIdToJoin: null,
 				connectedWithOther: null,
+				timeLeft: null,
 			}
 		}
 	},
@@ -346,14 +350,38 @@ export default {
 				}
 			}
 		},
+		updateTime() {
+			if(this.page.timeLeft == null) {
+				return
+			}
+			else {
+				if(this.page.timeLeft == 0) {
+					this.page.timeLeft = null
+					this.timeOut(this.page.turn)
+				}
+				else {
+					this.page.timeLeft--
+				}
+			}
+		},
+		timeOut() {
+			this.socket.emit('error_timed_out', this.page.turn, this.page.room)
+		},
+		timeOutPlayer(i) {
+			return (i == 1)
+				? "Player Red Timed Out"
+				: "Player Yellow Timed Out"
+		},
 	},
 	created() {
+		setInterval(() => {this.updateTime()}, 1000)
 		this.socket = io("https://socket-server.plank-and-timber.com/", { secure: true, reconnection: false, rejectUnauthorized: false })
 		this.socket.on('new_game', (room, client) => {
 			this.page.connectedWithOther = true
 			this.page.room = room
 			this.page.playerYellow = room
 			this.page.playerRed = client
+			this.page.timeLeft = 30
 		})
 		this.socket.on('move_placed_received', (x,y) => {
 			this.$set(this.page.board[x], [y], this.value(this.page.turn))
@@ -361,6 +389,7 @@ export default {
 			this.checkVerticalWin(this.value(this.page.turn))
 			this.checkDiagonalWin()
 			this.checkDraw()
+			this.page.timeLeft = 30
 			this.page.turn = !this.page.turn
 			this.$forceUpdate()
 		})
@@ -393,6 +422,15 @@ export default {
 			})
 			.catch((error) => {
 				return
+			})
+		})
+		this.socket.on('error_player_timed_out', (player) => {
+			this.$alert(this.timeOutPlayer(player), 'Time Out!')
+			.then(() => {
+				window.location.reload()
+			})
+			.catch((error) => {
+				window.location.reload()
 			})
 		})
 		this.createBoard()
