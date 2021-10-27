@@ -2,13 +2,13 @@
 	<div class="bg-gray-400">
 		<div>
 			<div class="ml-auto mr-auto pt-10 grid grid-rows-8 row-span-8 ml-4 w-3/5">
-				<div class="flex flex-nowrap ml-auto mr-auto">
+				<div class="flex flex-col ml-auto mr-auto sm:flex-row">
 					<div class="mt-8 mr-4">
 						<button class="bg-gray-200 hover:bg-gray-100 text-blue-900 font-semibold py-2 px-4 border border-blue-900 rounded shadow" @click="newGame()">
 							New Game
 						</button>
 					</div>
-					<div class="border-2 rounded-lg h-20 w-60 mt-2 mb-5 ml-auto mr-auto text-center bg-blue-900 border-yellow-300">
+					<div class="border-2 rounded-lg h-20 w-60 mt-2 mb-5 mx-auto text-center bg-blue-900 border-yellow-300">
 						<div class="text-2xl mt-4">
 							<div v-if="gameOverCompute">
 								<div v-if="this.page.winner == 1">
@@ -38,9 +38,9 @@
 						</div>
 					</div>
 				</div>
-				<div v-if="this.socket.connected && !this.page.connectedWithOther" class="mb-2 ml-auto mr-auto">
-					<div class="flex flex-nowrap">
-						<div class="h-6 w-3/4 mb-4 font-semibold text-center bg-gray-200 text-blue-900 border border-blue-900 rounded">
+				<div v-if="this.socket.connected && !this.page.connectedWithOther" class="mb-2 mx-auto">
+					<div class="flex flex-col sm:flex-row items-center">
+						<div class="mb-4 mx-auto font-semibold text-center bg-gray-200 py-2 px-3 text-blue-900 border border-blue-900 rounded">
 							ClientID: {{clientId}}
 						</div>
 						<v-popover
@@ -60,9 +60,9 @@
 						</template>
 						</v-popover>
 					</div>
-					<div class="flex flex-nowrap">
-						<input class="w-64 bg-gray-200 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-blue-900 rounded" v-model="page.socketIdToJoin" placeholder="Enter ClientID to join"></input>
-						<div class="w-32 ml-4 bg-gray-200 hover:bg-gray-100 text-blue-900 py-2 px-4 border border-blue-900 rounded shadow">
+					<div class="flex flex-col sm:flex-row">
+						<input class="w-64 mx-auto bg-gray-200 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border border-blue-900 rounded" v-model="page.socketIdToJoin" placeholder="Enter ClientID to join"></input>
+						<div class="w-32 ml-4 mx-auto bg-gray-200 hover:bg-gray-100 text-blue-900 py-2 px-4 border border-blue-900 rounded shadow">
 							<button @click="joinGame()" class="font-semibold">
 								Join Game
 							</button>
@@ -70,55 +70,58 @@
 					</div>
 				</div>
 				<div v-if="this.page.connectedWithOther">
-					<div class="w-1/2 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+					<div class="w-5/6 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2 px-2 py-3 text-xs sm:text-sm">
 						You are connected with another Player.
 					</div>
-					<div class="w-1/2 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow">
+					<div class="w-5/6 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2 px-2 py-3 text-xs sm:text-sm">
 						{{turnCompute}}
 					</div>
+					<div>
+						{{page.timeLeft}}				
+					</div>
 				</div>
-				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-10">
-					<div class="ml-auto mr-auto max-w-xl max-h-16 mb-4 mt-4 bg-blue-900" v-for="(item, index) in this.page.board">
+				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 w-xl max-w-2xl m-auto mb-10">
+					<div class="m-auto max-w-xl max-h-4 mb-4 mt-4 bg-blue-900 sm:max-h-8 md:max-h-12 lg:max-h-16" v-for="(item, index) in this.page.board">
 						<div class="grid grid-cols-8">
-							<div v-for="(i, nested_index) in item" class="ml-auto mr-auto">
+							<div v-for="(i, nested_index) in item" class="mx-auto">
 								<div v-if="i == 1">
-									<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-red-700 cursor-not-allowed"></div>
+									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-red-700 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-12 md:w-12 lg:w-16 lg:h-16"></div>
 								</div>
 								<div v-else-if="i == -1">
-									<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-yellow-300 cursor-not-allowed"></div>
+									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-yellow-300 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 								</div>
 								<div v-else>
 									<div v-if="index == 7 || index !== 0 && valueBelow(index, nested_index) || index == 0 && valueBelow(index, nested_index)">
 										<div v-if="gameOverCompute == false">
 											<div v-if="page.turn == 0 && page.playerYellow == socket.id">
 												<button @click="placeMove(index, nested_index)">
-													<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
+													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 												</button>
 											</div>
 											<div v-else-if="page.turn == 1 && page.playerRed == socket.id">
 												<button @click="placeMove(index, nested_index)">
-													<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400"></div>
+													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 												</button>
 											</div>
 											<div v-else>
-												<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+												<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 											</div>
 										</div>
 										<div v-else>
-											<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+											<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 										</div>
 									</div>
 									<div v-else>
-										<div class="border-2 rounded-lg h-16 w-16 border-yellow-300 bg-gray-400 cursor-not-allowed"></div>
+										<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-12 md:w-12 lg:w-16 lg:h-16"></div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="border border-blue-900 rounded ml-auto mr-auto w-2/3 mb-12">
-					<h1 class="text-blue-900 font-bold text-2xl">How to Play:</h1>
-					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold text-lg">
+				<div class="border border-2 border-blue-900 rounded-lg ml-auto mr-auto w-5/6 mb-12 py-2 px-3">
+					<h1 class="text-blue-900 font-bold text-lg sm:text-2xl mb-4">How to Play:</h1>
+					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold mx-auto text-sm sm:text-lg">
 						<li>Copy your client ID above and send it to one of your friends.</li>
 						<li>Have one of your friends send you theirs and connect to their session.</li>
 						<li>Play the game until there is a winner or a draw. Good luck!</li>
@@ -148,6 +151,7 @@ export default {
 				playerRed: null,
 				socketIdToJoin: null,
 				connectedWithOther: null,
+				timeLeft: null,
 			}
 		}
 	},
@@ -346,14 +350,38 @@ export default {
 				}
 			}
 		},
+		updateTime() {
+			if(this.page.timeLeft == null) {
+				return
+			}
+			else {
+				if(this.page.timeLeft == 0) {
+					this.page.timeLeft = null
+					this.timeOut(this.page.turn)
+				}
+				else {
+					this.page.timeLeft--
+				}
+			}
+		},
+		timeOut() {
+			this.socket.emit('error_timed_out', this.page.turn, this.page.room)
+		},
+		timeOutPlayer(i) {
+			return (i == 1)
+				? "Player Red Timed Out"
+				: "Player Yellow Timed Out"
+		},
 	},
 	created() {
+		setInterval(() => {this.updateTime()}, 1000)
 		this.socket = io("https://socket-server.plank-and-timber.com/", { secure: true, reconnection: false, rejectUnauthorized: false })
 		this.socket.on('new_game', (room, client) => {
 			this.page.connectedWithOther = true
 			this.page.room = room
 			this.page.playerYellow = room
 			this.page.playerRed = client
+			this.page.timeLeft = 30
 		})
 		this.socket.on('move_placed_received', (x,y) => {
 			this.$set(this.page.board[x], [y], this.value(this.page.turn))
@@ -361,6 +389,7 @@ export default {
 			this.checkVerticalWin(this.value(this.page.turn))
 			this.checkDiagonalWin()
 			this.checkDraw()
+			this.page.timeLeft = 30
 			this.page.turn = !this.page.turn
 			this.$forceUpdate()
 		})
@@ -393,6 +422,15 @@ export default {
 			})
 			.catch((error) => {
 				return
+			})
+		})
+		this.socket.on('error_player_timed_out', (player) => {
+			this.$alert(this.timeOutPlayer(player), 'Time Out!')
+			.then(() => {
+				window.location.reload()
+			})
+			.catch((error) => {
+				window.location.reload()
 			})
 		})
 		this.createBoard()
