@@ -70,55 +70,55 @@
 					</div>
 				</div>
 				<div v-if="this.page.connectedWithOther">
-					<div class="w-3/4 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2">
+					<div class="w-5/6 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2 px-2 py-3 text-xs sm:text-sm">
 						You are connected with another Player.
 					</div>
-					<div class="w-3/4 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2">
+					<div class="w-5/6 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2 px-2 py-3 text-xs sm:text-sm">
 						{{turnCompute}}
 					</div>
 				</div>
-				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 max-w-2xl mr-auto ml-auto mb-10">
-					<div class="ml-auto mr-auto max-w-xl max-h-16 mb-4 mt-4 bg-blue-900" v-for="(item, index) in this.page.board">
+				<div class="container border-2 rounded-lg border-yellow-300 bg-blue-900 w-xl max-w-2xl m-auto mb-10">
+					<div class="m-auto max-w-xl max-h-4 mb-4 mt-4 bg-blue-900 sm:max-h-8 md:max-h-12 lg:max-h-16" v-for="(item, index) in this.page.board">
 						<div class="grid grid-cols-8">
-							<div v-for="(i, nested_index) in item" class="ml-auto mr-auto">
+							<div v-for="(i, nested_index) in item" class="mx-auto">
 								<div v-if="i == 1">
-									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-red-700 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-16 md:w-16"></div>
+									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-red-700 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-12 md:w-12 lg:w-16 lg:h-16"></div>
 								</div>
 								<div v-else-if="i == -1">
-									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-yellow-300 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
+									<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-yellow-300 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 								</div>
 								<div v-else>
 									<div v-if="index == 7 || index !== 0 && valueBelow(index, nested_index) || index == 0 && valueBelow(index, nested_index)">
 										<div v-if="gameOverCompute == false">
 											<div v-if="page.turn == 0 && page.playerYellow == socket.id">
 												<button @click="placeMove(index, nested_index)">
-													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
+													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 												</button>
 											</div>
 											<div v-else-if="page.turn == 1 && page.playerRed == socket.id">
 												<button @click="placeMove(index, nested_index)">
-													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
+													<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 												</button>
 											</div>
 											<div v-else>
-												<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
+												<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 											</div>
 										</div>
 										<div v-else>
-											<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-16 md:h-16"></div>
+											<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:w-12 md:h-12 lg:w-16 lg:h-16"></div>
 										</div>
 									</div>
 									<div v-else>
-										<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-16 md:w-16"></div>
+										<div class="border-2 rounded h-4 w-4 border-yellow-300 bg-gray-400 cursor-not-allowed md:rounded-lg sm:h-8 sm:w-8 md:h-12 md:w-12 lg:w-16 lg:h-16"></div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="border border-blue-900 rounded ml-auto mr-auto w-5/6 mb-12 py-2 px-3">
-					<h1 class="text-blue-900 font-bold text-2xl mb-4">How to Play:</h1>
-					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold text-lg mx-auto">
+				<div class="border border-2 border-blue-900 rounded-lg ml-auto mr-auto w-5/6 mb-12 py-2 px-3">
+					<h1 class="text-blue-900 font-bold text-lg sm:text-2xl mb-4">How to Play:</h1>
+					<ul class="list-disc list-inside text-left ml-6 text-blue-900 font-semibold mx-auto text-sm sm:text-lg">
 						<li>Copy your client ID above and send it to one of your friends.</li>
 						<li>Have one of your friends send you theirs and connect to their session.</li>
 						<li>Play the game until there is a winner or a draw. Good luck!</li>
