@@ -76,7 +76,7 @@
 					<div class="w-5/6 ml-auto mr-auto mb-5 font-semibold bg-gray-200 text-blue-900 border border-blue-900 rounded shadow sm:w-1/2 px-2 py-3 text-xs sm:text-sm">
 						{{turnCompute}}
 					</div>
-					<div>
+					<div class="bg-gray-200 text-blue-900 h-12 w-16 py-2 px-2 border border-blue-900 rounded shadow font-bold mx-auto mb-4">
 						{{page.timeLeft}}				
 					</div>
 				</div>
@@ -230,6 +230,7 @@ export default {
 			window.getSelection().removeAllRanges()
 		},
 		gameOver(w) {
+			this.page.timeLeft = null
 			this.page.gameWon = true
 			this.page.winner = w
 			if(w == 0) {
@@ -385,11 +386,11 @@ export default {
 		})
 		this.socket.on('move_placed_received', (x,y) => {
 			this.$set(this.page.board[x], [y], this.value(this.page.turn))
+			this.page.timeLeft = 30
 			this.checkHorizontalWin(this.value(this.page.turn))
 			this.checkVerticalWin(this.value(this.page.turn))
 			this.checkDiagonalWin()
 			this.checkDraw()
-			this.page.timeLeft = 30
 			this.page.turn = !this.page.turn
 			this.$forceUpdate()
 		})
